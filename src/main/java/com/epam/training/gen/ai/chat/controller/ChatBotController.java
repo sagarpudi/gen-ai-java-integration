@@ -19,6 +19,21 @@ public class ChatBotController {
         this.promptService = promptService;
     }
 
+    @GetMapping("/api/prompt")
+    public Map<String, Object> prompt(@RequestParam(required = false) String prompt) {
+        if (prompt == null || prompt.trim().isEmpty()) {
+            throw new IllegalArgumentException("Prompt cannot be empty");
+        }
+
+        PromptResponse response = generateResponse(prompt);
+
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("prompt", prompt);
+        responseMap.put("response", response);
+
+        return responseMap;
+    }
+
     @GetMapping("/api/chat")
     public Map<String, Object> chat(@RequestParam(required = false) String prompt) {
         if (prompt == null || prompt.trim().isEmpty()) {
