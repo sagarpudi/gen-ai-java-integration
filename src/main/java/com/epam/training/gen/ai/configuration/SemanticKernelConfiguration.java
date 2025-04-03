@@ -34,7 +34,7 @@ public class SemanticKernelConfiguration {
      * @return an instance of {@link ChatCompletionService}
      */
     @Bean
-    public ChatCompletionService chatCompletionService(@Value("${client-azureopenai-deployment-name}") String deploymentOrModelName,
+    public ChatCompletionService chatCompletionService(@Value("${client.azureopenai.deployment-name}") String deploymentOrModelName,
                                                        OpenAIAsyncClient openAIAsyncClient) {
         return OpenAIChatCompletion.builder()
                 .withModelId(deploymentOrModelName)
@@ -89,7 +89,7 @@ public class SemanticKernelConfiguration {
      * @return a map of model names to {@link PromptExecutionSettings}
      */
     @Bean
-    public Map<String, PromptExecutionSettings> promptExecutionsSettingsMap(@Value("${client-azureopenai-deployment-name}")
+    public Map<String, PromptExecutionSettings> promptExecutionsSettingsMap(@Value("${client.azureopenai.deployment-name}")
                                                                             String deploymentOrModelName) {
         return Map.of(deploymentOrModelName, PromptExecutionSettings.builder()
                 .withTemperature(1.0)

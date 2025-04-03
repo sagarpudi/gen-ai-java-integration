@@ -6,7 +6,6 @@ import com.azure.core.credential.AzureKeyCredential;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 /**
  * Configuration class for setting up the Azure OpenAI Async Client.
@@ -18,11 +17,14 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class OpenAIConfiguration {
 
-    @Value("${client-azureopenai-key}")
-    private String AZURE_CLIENT_KEY;
+    private final String AZURE_CLIENT_KEY;
+    private final String AZURE_OPENAI_SERVICE_CLIENT_ENDPOINT;
 
-    @Value("${client-azureopenai-endpoint}")
-    private String AZURE_OPENAI_SERVICE_CLIENT_ENDPOINT;
+    public OpenAIConfiguration(@Value("${client.azureopenai.key}") String AZURE_CLIENT_KEY,
+                               @Value("${client.azureopenai.endpoint}") String AZURE_OPENAI_SERVICE_CLIENT_ENDPOINT) {
+        this.AZURE_CLIENT_KEY = AZURE_CLIENT_KEY;
+        this.AZURE_OPENAI_SERVICE_CLIENT_ENDPOINT = AZURE_OPENAI_SERVICE_CLIENT_ENDPOINT;
+    }
 
     /**
      * Creates an {@link OpenAIAsyncClient} bean for interacting with Azure OpenAI Service asynchronously.

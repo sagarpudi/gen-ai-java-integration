@@ -1,10 +1,10 @@
-package com.epam.training.gen.ai.chat.prompt;
+package com.epam.training.gen.ai.chat.service;
 
 import com.epam.training.gen.ai.chat.model.PromptResponse;
+import com.epam.training.gen.ai.configuration.PromptExecutionConfig;
 import com.microsoft.semantickernel.Kernel;
 import com.microsoft.semantickernel.orchestration.InvocationContext;
 import com.microsoft.semantickernel.orchestration.PromptExecutionSettings;
-import com.microsoft.semantickernel.orchestration.responseformat.ResponseFormat;
 import com.microsoft.semantickernel.plugin.KernelPlugin;
 import com.microsoft.semantickernel.semanticfunctions.KernelFunction;
 import com.microsoft.semantickernel.semanticfunctions.KernelFunctionFromPrompt;
@@ -15,7 +15,7 @@ import com.microsoft.semantickernel.services.chatcompletion.ChatCompletionServic
 import com.microsoft.semantickernel.services.chatcompletion.ChatHistory;
 import com.microsoft.semantickernel.services.chatcompletion.ChatMessageContent;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -25,21 +25,18 @@ import java.util.Optional;
 
 import static com.epam.training.gen.ai.chat.util.PromptConstants.*;
 
+@Slf4j
 @Service
 @AllArgsConstructor
-public class PromptService {
+public class PromptServiceImpl implements PromptService {
+
     private ChatCompletionService dynamicChatCompletionService;
     private final Kernel semanticKernel;
     private InvocationContext invocationContext;
 
-    @Value("${prompt.execution.temperature}")
-    private double temperature;
-    @Value("{prompt.execution.maxTokens}")
-    private Integer maxTokens;
-    @Value("${client-azureopenai-deployment-name}")
-    private String deploymentName;
 
-    public PromptResponse getChatBotResponse(String userPrompt) {
+    @Override
+    public PromptResponse getChatBotResponse(String userPrompt, PromptExecutionSettings promptExecutionSettings) {
 
         ChatHistory history = new ChatHistory();
         history.addUserMessage(userPrompt);
@@ -55,12 +52,9 @@ public class PromptService {
                 .withPlugin(new KernelPlugin("PromptPlugin", "plugins for prompt", functions)).build();
 
         // adding PromptExecutionSetting
-         invocationContext = InvocationContext.builder()
-                .withPromptExecutionSettings(PromptExecutionSettings.builder()
-                        .withModelId(deploymentName)
-                        .withTemperature(temperature)
-                        .withMaxTokens(maxTokens)
-                        .build()).build();
+        invocationContext = InvocationContext.builder()
+                .withPromptExecutionSettings(promptExecutionSettings)
+                .build();
 
         List<ChatMessageContent<?>> results = dynamicChatCompletionService
                 .getChatMessageContentsAsync(history, kernel, invocationContext)
