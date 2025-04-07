@@ -2,12 +2,12 @@ package com.epam.training.gen.ai.chat.controller;
 
 import com.epam.training.gen.ai.chat.model.PromptResponse;
 import com.epam.training.gen.ai.chat.service.PromptService;
+import com.epam.training.gen.ai.chat.util.DeploymentModel;
 import com.epam.training.gen.ai.chat.util.ValidationUtils;
 import com.epam.training.gen.ai.configuration.PromptExecutionConfig;
 import com.microsoft.semantickernel.orchestration.PromptExecutionSettings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,12 +32,13 @@ public class ChatBotController {
     }
 
     @GetMapping("prompt")
-    public Map<String, Object> prompt(@RequestParam(required = false) String userPrompt, @RequestParam(required = false) double temperature) {
+    public Map<String, Object> prompt(@RequestParam(required = false) String userPrompt, @RequestParam(required = false) double temperature, @RequestParam("model")  DeploymentModel deploymentModel) {
         ValidationUtils.validateUserPrompt(userPrompt);
         ValidationUtils.validateTemperature(temperature);
+        ValidationUtils.validateDeploymentModel(deploymentModel);
         promptExecutionConfig = PromptExecutionConfig.builder().temperature(temperature)
                 .maxTokensPerPrompt(promptExecutionConfig.getMaxTokensPerPrompt())
-                .deploymentName( promptExecutionConfig.getDeploymentName())
+                .deploymentName(deploymentModel.getModelName())
                 .build();
 
         log.debug("Prompt execution config: tokens - {},deployment- {}, temperature {} ",promptExecutionConfig.getMaxTokensPerPrompt(), promptExecutionConfig.getDeploymentName(), promptExecutionConfig.getTemperature());
