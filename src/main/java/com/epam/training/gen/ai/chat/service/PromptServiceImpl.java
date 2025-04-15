@@ -1,7 +1,6 @@
 package com.epam.training.gen.ai.chat.service;
 
 import com.epam.training.gen.ai.chat.model.PromptResponse;
-import com.epam.training.gen.ai.configuration.PromptExecutionConfig;
 import com.microsoft.semantickernel.Kernel;
 import com.microsoft.semantickernel.orchestration.InvocationContext;
 import com.microsoft.semantickernel.orchestration.PromptExecutionSettings;
