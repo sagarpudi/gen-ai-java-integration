@@ -33,6 +33,7 @@ public class GlobalExceptionHandler {
     public Map<String, String> handleGeneralException(Exception ex) {
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("error", "An unexpected error occurred");
+        errorResponse.put("details", ex.getMessage());
         return errorResponse;
     }
 }

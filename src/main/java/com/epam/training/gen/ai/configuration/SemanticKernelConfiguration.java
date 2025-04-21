@@ -1,7 +1,8 @@
 package com.epam.training.gen.ai.configuration;
 
 import com.azure.ai.openai.OpenAIAsyncClient;
-import com.epam.training.gen.ai.semantic.plugins.SimplePlugin;
+import com.epam.training.gen.ai.semantic.plugins.AgeCalculatorPlugin;
+import com.epam.training.gen.ai.semantic.plugins.WeatherForecastPlugin;
 import com.microsoft.semantickernel.Kernel;
 import com.microsoft.semantickernel.aiservices.openai.chatcompletion.OpenAIChatCompletion;
 import com.microsoft.semantickernel.orchestration.InvocationContext;
@@ -42,15 +43,10 @@ public class SemanticKernelConfiguration {
                 .build();
     }
 
-    /**
-     * Creates a {@link KernelPlugin} bean using a simple plugin.
-     *
-     * @return an instance of {@link KernelPlugin}
-     */
     @Bean
-    public KernelPlugin kernelPlugin() {
+    public KernelPlugin weatherForecastPlugin() {
         return KernelPluginFactory.createFromObject(
-                new SimplePlugin(), "Simple Plugin");
+                new WeatherForecastPlugin(), "WeatherPlugin");
     }
 
     /**
@@ -61,9 +57,14 @@ public class SemanticKernelConfiguration {
      * @return an instance of {@link Kernel}
      */
     @Bean
-    public Kernel kernel(ChatCompletionService chatCompletionService, KernelPlugin kernelPlugin) {
+    public Kernel kernel(ChatCompletionService chatCompletionService,
+                         KernelPlugin weatherForecastPlugin,
+                         KernelPlugin ageCalculatorPlugin,
+                         KernelPlugin kernelPlugin) {
         return Kernel.builder()
                 .withAIService(ChatCompletionService.class, chatCompletionService)
+                .withPlugin(weatherForecastPlugin)
+                .withPlugin(ageCalculatorPlugin)
                 .withPlugin(kernelPlugin)
                 .build();
     }

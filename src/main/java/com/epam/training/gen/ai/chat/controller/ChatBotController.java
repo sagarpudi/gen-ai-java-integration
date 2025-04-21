@@ -22,25 +22,30 @@ import java.util.Optional;
 public class ChatBotController {
 
     private final PromptService promptService;
+    private final ValidationUtils validationUtils;
     @Autowired
     private PromptExecutionConfig promptExecutionConfig;
 
 
-    public ChatBotController(PromptService promptService) {
+    public ChatBotController(PromptService promptService, ValidationUtils validationUtils) {
         this.promptService = promptService;
+        this.validationUtils = validationUtils;
     }
 
     @GetMapping("prompt")
     public Map<String, Object> prompt(@RequestParam(required = false) String userPrompt, @RequestParam(required = false) double temperature, @RequestParam("model")  String deploymentModelName) {
         ValidationUtils.validateUserPrompt(userPrompt);
         ValidationUtils.validateTemperature(temperature);
-        ValidationUtils.validateDeploymentModel(deploymentModelName);
+        validationUtils .validateDeploymentModel(deploymentModelName);
         promptExecutionConfig = PromptExecutionConfig.builder().temperature(temperature)
                 .maxTokensPerPrompt(promptExecutionConfig.getMaxTokensPerPrompt())
                 .deploymentName(deploymentModelName)
                 .build();
 
         log.debug("Prompt execution config: tokens - {},deployment- {}, temperature {} ",promptExecutionConfig.getMaxTokensPerPrompt(), promptExecutionConfig.getDeploymentName(), promptExecutionConfig.getTemperature());
+
+        // Initialize PluginManager and register plugins
+
 
         PromptResponse response = generateResponse(userPrompt,promptExecutionConfig);
 
