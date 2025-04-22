@@ -17,7 +17,7 @@ public class DeploymentService {
     @Value("${client.azureopenai.endpoint}")
     private String apiUrl;
 
-    @Value("${client.azureopenai.key")
+    @Value("${client.azureopenai.key}")
     private String apiKey;
 
     private final RestTemplate restTemplate;
@@ -32,7 +32,7 @@ public class DeploymentService {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                apiUrl,
+                apiUrl.concat("/openai/models"),
                 HttpMethod.GET,
                 entity,
                 String.class
