@@ -22,9 +22,10 @@ import java.util.Optional;
 public class ChatBotController {
 
     private final PromptService promptService;
-    private final ValidationUtils validationUtils;
     @Autowired
     private PromptExecutionConfig promptExecutionConfig;
+    @Autowired
+    private final ValidationUtils validationUtils;
 
 
     public ChatBotController(PromptService promptService, ValidationUtils validationUtils) {
@@ -34,18 +35,16 @@ public class ChatBotController {
 
     @GetMapping("prompt")
     public Map<String, Object> prompt(@RequestParam(required = false) String userPrompt, @RequestParam(required = false) double temperature, @RequestParam("model")  String deploymentModelName) {
-        ValidationUtils.validateUserPrompt(userPrompt);
-        ValidationUtils.validateTemperature(temperature);
-        validationUtils .validateDeploymentModel(deploymentModelName);
+        validationUtils.validateUserPrompt(userPrompt);
+        validationUtils.validateTemperature(temperature);
+
+        validationUtils.validateDeploymentModel(deploymentModelName);
         promptExecutionConfig = PromptExecutionConfig.builder().temperature(temperature)
                 .maxTokensPerPrompt(promptExecutionConfig.getMaxTokensPerPrompt())
                 .deploymentName(deploymentModelName)
                 .build();
 
         log.debug("Prompt execution config: tokens - {},deployment- {}, temperature {} ",promptExecutionConfig.getMaxTokensPerPrompt(), promptExecutionConfig.getDeploymentName(), promptExecutionConfig.getTemperature());
-
-        // Initialize PluginManager and register plugins
-
 
         PromptResponse response = generateResponse(userPrompt,promptExecutionConfig);
 
@@ -58,7 +57,7 @@ public class ChatBotController {
 
     @GetMapping("chat")
     public Map<String, Object> chat(@RequestParam(required = false) String prompt) {
-        ValidationUtils.validateUserPrompt(prompt);
+        validationUtils.validateUserPrompt(prompt);
 
         log.debug("Prompt execution config: tokens - {},deployment- {}, temperature {} ",promptExecutionConfig.getMaxTokensPerPrompt(), promptExecutionConfig.getDeploymentName(), promptExecutionConfig.getTemperature());
 
