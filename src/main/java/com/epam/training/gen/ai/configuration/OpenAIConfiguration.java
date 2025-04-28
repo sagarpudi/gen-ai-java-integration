@@ -3,6 +3,7 @@ package com.epam.training.gen.ai.configuration;
 import com.azure.ai.openai.OpenAIAsyncClient;
 import com.azure.ai.openai.OpenAIClientBuilder;
 import com.azure.core.credential.AzureKeyCredential;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +16,14 @@ import org.springframework.context.annotation.Configuration;
  * Credential for authentication and connects to a specified endpoint.
  */
 @Configuration
+@Getter
 public class OpenAIConfiguration {
+
+    @Value("${client.openai.embeddings-deployment-name}")
+    private String embeddingsModel;
+
+    @Value("${client.openai.deployment-name}")
+    private String deploymentName;
 
     private final String AZURE_CLIENT_KEY;
     private final String AZURE_OPENAI_SERVICE_CLIENT_ENDPOINT;

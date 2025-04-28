@@ -9,16 +9,23 @@ client:
         key: ${AZURE_OPEN_AI_KEY}
         endpoint: ${AZURE_OPEN_AI_ENDPOINT}
         deployment-name: ${AZURE_OPEN_AI_DEPLOYMENT_NAME}
+    openai:
+        deployment-name: ${AZURE_OPEN_AI_DEPLOYMENT_NAME}
+        embeddings-deployment-name: ${OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME}
 
 # Prompt Execution Configuration
 prompt:
     execution:
         temperature: 0.1       # Ensure this is within a valid range (e.g., 0.0 to 1.0)
         maxTokens: 1000        # Ensure this does not exceed the max limit of OpenAI
-
+# Vector
+qdrant:
+    endpoint: http://localhost:6333
 
 #logging level
 logging:
     level:
         root: INFO
         com.epam.training.gen.ai: DEBUG
+
+
